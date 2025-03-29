@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I'm Sorry</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f5f5;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .note {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffeb3b;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 1;
+    transition: opacity 1s ease-out;
+    z-index: 999;
+  }/* Button unfold animation */
+  @keyframes unfold {
+    0% {
+      transform: scaleX(0);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
+
+  .button {
+    transform-origin: left;
+    animation: unfold 0.5s ease-out;
+  }
+
+  /* Button disappears after unfolding */
+  .hide-button {
+    transition: opacity 0.5s ease-out;
+    opacity: 0;
+  }
+    .curtain-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      display: flex;
+      pointer-events: none;
+    }
+    
+    .curtain {
+      width: 50%;
+      height: 100%;
+      background-color: #4a4a9c;
+      position: relative;
+      transition: transform 3s cubic-bezier(0.8, 0, 0.2, 1);
+    }
+    
+    .curtain-left {
+      transform-origin: left;
+      transform: translateX(-100%);
+      box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+    }
+    
+    .curtain-right {
+      transform-origin: right;
+      transform: translateX(100%);
+      box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+    }
+    
+    .initial-curtain .curtain-left {
+      transform: translateX(0);
+    }
+    
+    .initial-curtain .curtain-right {
+      transform: translateX(0);
+    }
+    
+    .content {
+      text-align: center;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s ease;
+      transition-delay: 1.5s;
+      z-index: 1;
+    }
+    
+    .visible .content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    h1 {
+      font-size: 3rem;
+      color: #4a4a9c;
+      margin-bottom: 1rem;
+    }
+    
+    .message {
+      font-size: 1.5rem;
+      color: #666;
+      margin-bottom: 2rem;
+      min-height: 60px;
+    }
+    
+    .button {
+      background-color: #4a4a9c;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 2rem;
+    }
+    
+    .button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(74, 74, 156, 0.4);
+    }
+    
+    .button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 5px rgba(74, 74, 156, 0.4);
+    }
+    
+    .character-container {
+      width: 300px;
+      height: 300px;
+      position: relative;
+      margin: 0 auto;
+      perspective: 1000px;
+    }
+    
+    .character {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-origin: center center;
+      transform-style: preserve-3d;
+    }
+    
+    .character-svg {
+      width: 100%;
+      height: 100%;
+    }
+    
+    @keyframes situp {
+      0% {
+        transform: rotateX(45deg) translateY(20px);
+      }
+      50% {
+        transform: rotateX(0deg) translateY(0);
+      }
+      100% {
+        transform: rotateX(45deg) translateY(20px);
+      }
+    }
+    
+    .doing-situps .character {
+      animation: situp 1.5s ease-in-out infinite;
+      transform-style: preserve-3d;
+    }
+    
+    .fadeIn {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="initial-curtain">
+  <div class="curtain-container">
+    <div class="curtain curtain-left"></div>
+    <div class="curtain curtain-right"></div>
+  </div>
+  <div class="note" id="note">Sorry, whatever I did was absolutely wrong. I value our friendship alot, and I hurt you. Still, I kept arguing, and then I realized it when you said, "Mai tere liye ladai kar rahi thi aur tu mujhe akele chhod ke chala gaya." I know what I did was wrong, and maybe you won’t forgive me—that’s totally up to you, and you’re right too. Bhai, I’m really sorry, yaar. I’m truly grateful to have such a beautiful bond with you… Bhai yaar, ek baar phir se galti kar di maine… Sorry, Aparna.😭
+    3.....2....1....Yash comming </div>
+
+  <div class="content">
+    <h1>I'm Sorry</h1>
+    <div class="message">Please accept my sincere apology.</div>
+    
+    <button class="button" id="apologyButton">You Press Yash Sorry bolega</button>
+    
+    <div class="character-container">
+      <div class="character">
+        <svg class="character-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- Realistic boy doing situps while touching ears -->
+          <g id="boy">
+            <!-- Body - Down position (initial) -->
+            <g id="body-down">
+              <!-- Torso -->
+              <path d="M120,80 C100,80 90,110 90,140 C90,170 110,190 120,190 C130,190 150,170 150,140 C150,110 140,80 120,80 Z" fill="#3a86ff" stroke="#333" stroke-width="2"/>
+              
+              <!-- Head -->
+              <circle cx="120" cy="60" r="30" fill="#ffd166" stroke="#333" stroke-width="2"/>
+              
+              <!-- Face - Normal expression -->
+              <g id="face-normal">
+                <!-- Eyes -->
+                <ellipse cx="110" cy="55" rx="4" ry="5" fill="#333"/>
+                <ellipse cx="130" cy="55" rx="4" ry="5" fill="#333"/>
+                
+                <!-- Mouth -->
+                <path d="M110,70 C115,75 125,75 130,70" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+              </g>
+              
+              <!-- Face - Strain expression (hidden initially) -->
+              <g id="face-strain" opacity="0">
+                <!-- Eyes -->
+                <ellipse cx="110" cy="55" rx="4" ry="2" fill="#333"/>
+                <ellipse cx="130" cy="55" rx="4" ry="2" fill="#333"/>
+                
+                <!-- Mouth -->
+                <path d="M110,75 C115,80 125,80 130,75" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+              </g>
+              
+              <!-- Hair -->
+              <path d="M90,50 C90,30 150,30 150,50" fill="#703b15" stroke="#333" stroke-width="1"/>
+              
+              <!-- Arms in rest position -->
+              <path id="left-arm-down" d="M90,100 C70,110 60,120 50,130" fill="none" stroke="#ffd166" stroke-width="12" stroke-linecap="round"/>
+              <path id="right-arm-down" d="M150,100 C170,110 180,120 190,130" fill="none" stroke="#ffd166" stroke-width="12" stroke-linecap="round"/>
+              
+              <!-- Legs -->
+              <path id="left-leg" d="M100,190 L90,240" fill="none" stroke="#06d6a0" stroke-width="15" stroke-linecap="round"/>
+              <path id="right-leg" d="M140,190 L150,240" fill="none" stroke="#06d6a0" stroke-width="15" stroke-linecap="round"/>
+            </g>
+            
+            <!-- Arms in situp position (touching ears) - hidden initially -->
+            <path id="left-arm-up" d="M90,100 C80,90 80,70 95,55" fill="none" stroke="#ffd166" stroke-width="12" stroke-linecap="round" opacity="0"/>
+            <path id="right-arm-up" d="M150,100 C160,90 160,70 145,55" fill="none" stroke="#ffd166" stroke-width="12" stroke-linecap="round" opacity="0"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // References
+      const body = document.body;
+      const button = document.getElementById('apologyButton');
+      const message = document.querySelector('.message');
+      const character = document.querySelector('.character-container');
+      const face = document.querySelector('.face');
+      
+      
+      // Apology messages
+      const apologies = [
+        "I'm truly sorry for my mistake bhai",
+        "Tu jo bolegi wo krunga pure 1 din",
+        "Tu kya khayegii tu bol mai khilunga.",
+        "Dekh yaar kaise kaan pakr raha hu.",
+        "Tu jo punishment de i will take it.",
+        "I promise it won't happen again.",
+        "Gossip krunga bahut saari.",
+        "Kaan dard hogayaa......meraaaaa.",
+        "Sorry Aparnaaaaaaaaaaaaaa behan.",
+        "Now you can send me **gaali** in message."
+        
+      ];
+      
+      // Open curtain after a short delay
+      setTimeout(function() {
+        body.classList.remove('initial-curtain');
+        setTimeout(function() {
+          body.classList.add('visible');
+        }, 1000);
+      }, 1000);
+      
+      // SVG Animation elements
+      const faceNormal = document.getElementById('face-normal');
+      const faceStrain = document.getElementById('face-strain');
+      const leftArmDown = document.getElementById('left-arm-down');
+      const rightArmDown = document.getElementById('right-arm-down');
+      const leftArmUp = document.getElementById('left-arm-up');
+      const rightArmUp = document.getElementById('right-arm-up');
+      
+      setTimeout(function() {
+  body.classList.remove('initial-curtain');
+  
+  // Hide the note after curtain unfolds
+  setTimeout(function() {
+    const note = document.getElementById('note');
+    note.style.opacity = "0";
+    setTimeout(() => note.style.display = "none", 1000); // Ensures it's removed
+  }, 3000); // Matches curtain open duration
+  
+  setTimeout(function() {
+    body.classList.add('visible');
+  }, 1000);
+}, 1000);
+
+      // Handle button click
+      button.addEventListener('click', function() {
+        // Change the message
+        const randomIndex = Math.floor(Math.random() * apologies.length);
+        const newMessage = apologies[randomIndex];
+        
+        // Apply animation
+        message.style.opacity = 0;
+        message.style.transform = 'translateY(10px)';
+        
+        setTimeout(function() {
+          message.textContent = newMessage;
+          message.style.opacity = 1;
+          message.style.transform = 'translateY(0)';
+          message.classList.add('fadeIn');
+          
+          setTimeout(function() {
+            message.classList.remove('fadeIn');
+          }, 500);
+        }, 300);
+        
+        // Make character do situps
+        character.classList.add('doing-situps');
+        
+        // Change face expression
+        faceNormal.setAttribute('opacity', '0');
+        faceStrain.setAttribute('opacity', '1');
+        
+        // Switch arms to up position (touching ears)
+        leftArmDown.setAttribute('opacity', '0');
+        rightArmDown.setAttribute('opacity', '0');
+        leftArmUp.setAttribute('opacity', '1');
+        rightArmUp.setAttribute('opacity', '1');
+        
+        // Stop situps after a few seconds
+        setTimeout(function() {
+          character.classList.remove('doing-situps');
+          
+          // Switch back to normal expression
+          faceNormal.setAttribute('opacity', '1');
+          faceStrain.setAttribute('opacity', '0');
+          
+          // Switch arms back to down position
+          leftArmDown.setAttribute('opacity', '1');
+          rightArmDown.setAttribute('opacity', '1');
+          leftArmUp.setAttribute('opacity', '0');
+          rightArmUp.setAttribute('opacity', '0');
+        }, 4500);
+      });
+    });
+  </script>
+</body>
+</html>
